@@ -25,7 +25,7 @@ class UserEndpoint(repository: UserRepository, userHandlerActor: ActorRef)(impli
   implicit val formats         = DefaultFormats
 
   val userRoutes = {
-    pathPrefix("api" / "users") {
+    pathPrefix("api" / "accounts") {
       (get & path(Segment).as(FindByIdRequest)) { request =>
 
         val futureHttpResponse = userHandlerActor ? GetUser(request.id) flatMap  {
@@ -41,7 +41,7 @@ class UserEndpoint(repository: UserRepository, userHandlerActor: ActorRef)(impli
 
         val futureHttpResponse = userHandlerActor ? SaveUser(user.asDomain) flatMap {
           case (statusCode: StatusCodes.Success, msg:Message) =>
-            Marshal(msg).to[ResponseEntity].map{ e => HttpResponse(entity = e, status = statusCode, headers = List(Location(s"/api/users/${msg.message}")))}
+            Marshal(msg).to[ResponseEntity].map{ e => HttpResponse(entity = e, status = statusCode, headers = List(Location(s"/api/accounts/${msg.message}")))}
           case (statusCode: StatusCode, msg:Message) =>
             Marshal(msg).to[ResponseEntity].map{ e => HttpResponse(entity = e, status = statusCode)}
         }

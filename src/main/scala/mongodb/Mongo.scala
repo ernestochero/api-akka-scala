@@ -13,5 +13,5 @@ object Mongo {
   lazy val codecRegistry = fromRegistries(fromProviders(userCodecProvider), DEFAULT_CODEC_REGISTRY)
   lazy val database: MongoDatabase = mongoClient.getDatabase(config.getString("mongo.database")).withCodecRegistry(codecRegistry)
 
-  lazy val userCollection: MongoCollection[User] = database.getCollection[User]("users")
+  lazy val userCollection: MongoCollection[User] = database.getCollection[User]("accounts")
 }

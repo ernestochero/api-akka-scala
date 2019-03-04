@@ -24,4 +24,11 @@ class UserRepository(collection: MongoCollection[User])(implicit ec:ExecutionCon
       .map { _ => user._id.toHexString }
   }
 
+  def saveOpt(user: User): Future[Option[String]] = {
+    collection
+      .insertOne(user)
+      .head()
+      .map { _ => Option(user._id.toHexString) }
+  }
+
 }

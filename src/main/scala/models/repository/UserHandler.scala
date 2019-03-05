@@ -22,7 +22,7 @@ class UserHandler(repository: UserRepository) extends Actor with ActorLogging {
     case GetUser(id) =>
       val _sender = sender()
       repository.findById(id).onComplete {
-        case Success(Some(user)) => _sender ! (StatusCodes.Found, user)
+        case Success(Some(user)) => _sender ! (StatusCodes.Found, user.asResource)
         case Success(None) => _sender ! (StatusCodes.NotFound,Message("User Not Found"))
         case Failure(e) => _sender ! (StatusCodes.InternalServerError,Message(e.getMessage))
       }

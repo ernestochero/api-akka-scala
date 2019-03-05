@@ -4,6 +4,8 @@ package models.repository
 import org.mongodb.scala._
 import org.mongodb.scala.bson.ObjectId
 import models._
+import org.bson.{BsonReader, BsonType, BsonWriter}
+import org.bson.codecs.{Codec, DecoderContext, EncoderContext}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,5 +32,4 @@ class UserRepository(collection: MongoCollection[User])(implicit ec:ExecutionCon
       .head()
       .map { _ => Option(user._id.toHexString) }
   }
-
 }

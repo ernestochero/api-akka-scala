@@ -13,7 +13,6 @@ case class User(_id: ObjectId, username: String, age: Option[Int]) {
 case class UserResource(id: String, username: String, age: Option[Int]) {
   require(username != null, "username not informed")
   require(username.nonEmpty, "username cannot be empty")
-  require(age.getOrElse(0) > 0, "age cannot be lower than 1")
 
   def asDomain = User(if (id == null) ObjectId.get() else new ObjectId(id), username, age)
 }

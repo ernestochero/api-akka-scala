@@ -37,9 +37,9 @@ class UserEndpoint(repository: UserRepository, userHandlerActor: ActorRef)(impli
 
         complete(futureHttpResponse)
 
-      } ~ (post & pathEndOrSingleSlash & entity(as[UserResource])) { user =>
+      } ~ (post & pathEndOrSingleSlash & entity(as[User])) { user =>
 
-        val futureHttpResponse = userHandlerActor ? SaveUser(user.asDomain) flatMap {
+        val futureHttpResponse = userHandlerActor ? SaveUser(user) flatMap {
           case (statusCode: StatusCodes.Success, msg:Message) =>
             Marshal(msg).to[ResponseEntity].map{ e => HttpResponse(entity = e, status = statusCode, headers = List(Location(s"/api/users/${msg.message}")))}
           case (statusCode: StatusCode, msg:Message) =>

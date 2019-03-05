@@ -27,28 +27,6 @@ class UserEndpoint(repository: UserRepository, userHandlerActor: ActorRef)(impli
   val userRoutes = {
     pathPrefix("api" / "users") {
       (get & path(Segment).as(FindByIdRequest)) { request =>
-        onComplete(repository.findById(request.id)) {
-          case Success(Some(user)) =>
-            complete(Marshal(user).to[ResponseEntity].map {e => HttpResponse(entity = e)})
-          case Success(None) =>
-            complete(HttpResponse(status = StatusCodes.NotFound))
-          case Failure(e) =>
-            complete(Marshal(Message(e.getMessage)).to[ResponseEntity].map { e => HttpResponse(entity = e, status = StatusCodes.InternalServerError) })
-        }
-      } ~ (post & pathEndOrSingleSlash & entity(as[User])) { user =>
-        onComplete(repository.save(user)) {
-          case Success(id) =>
-            complete(HttpResponse(status = StatusCodes.Created, headers = List(Location(s"/api/users/$id"))))
-          case Failure(e) =>
-            complete(Marshal(Message(e.getMessage)).to[ResponseEntity].map{ e => HttpResponse(entity = e, status = StatusCodes.InternalServerError)})
-        }
-      }
-    }
-  }
-
-  val userRoutes2 = {
-    pathPrefix("api" / "users") {
-      (get & path(Segment).as(FindByIdRequest)) { request =>
 
         val futureHttpResponse = userHandlerActor ? GetUser(request.id) flatMap  {
           case (statusCode: StatusCode,user:UserResource) =>
